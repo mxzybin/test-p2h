@@ -13,12 +13,14 @@ let path={
             css: source__folder+"/**/*.{scss,css}",
             js: source__folder+"/**/*.js",
             img: source__folder+"/img/**/*.{jpg,png,svg,gif,ico,webp}",
+            fonts: source__folder+"/fonts/.{ttf,otf,woff,woff2}",
         },
         watch:{
             html: source__folder+"/**/*.html",
             css: source__folder+"/**/*.{scss,css}",
             js: source__folder+"/**/*.js",
             img: source__folder+"/img/**/*.{jpg,png,svg,gif,ico,webp}",
+            fonts: source__folder+"/fonts/.{ttf,otf,woff,woff2}",
         },
         clean: "./" + project__folder+"/"
             
@@ -39,7 +41,10 @@ imagemin = require("gulp-imagemin");
 // webp = require("gulp-webp");
 // webphtml = require("gulp-webp-html");
 // webpcss = require("gulp-webpcss");
-
+gulp.task('fonts', function() {
+    return gulp.src('#src/fonts/**/*')
+      .pipe(gulp.dest('dist/fonts'))
+  })
 
 
 function browserSync(params) {
@@ -52,6 +57,12 @@ function browserSync(params) {
     })
 }
 
+
+
+function fonts() {
+    return gulp.src('#src/fonts/**/*')
+    .pipe(gulp.dest('dist/fonts'))
+}
 function html() {
     return src(path.src.html)
     .pipe(fileinclude())
@@ -118,6 +129,7 @@ function watchFiles(params) {
     gulp.watch([path.watch.css],css);
     gulp.watch([path.watch.js],js);
     gulp.watch([path.watch.img],images);
+    gulp.watch([path.watch.fonts],fonts);
 
 
 }
@@ -126,10 +138,11 @@ function clean(params) {
     return del(path.clean);
 }
 
-let build = gulp.series(clean,gulp.parallel(css,html,js,images));
+let build = gulp.series(clean,gulp.parallel(css,html,js,images,fonts));
 let watch = gulp.parallel(build,watchFiles,browserSync);
 
 
+exports.fonts = fonts;
 exports.css = css;
 exports.images = images;
 exports.js = js;
